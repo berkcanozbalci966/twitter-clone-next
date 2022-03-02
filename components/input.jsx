@@ -8,15 +8,62 @@ import {
 import { useState, useRef } from "react";
 import "emoji-mart/css/emoji-mart.css";
 import { Picker } from "emoji-mart";
+import { db, storage } from "../firebase";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from "@firebase/firestore";
+import { getDownloadURL, ref, uploadString } from "@firebase/storage";
 
 export default function Input() {
   const [input, setInput] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [showEmojis, setShowEmojis] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const filePickerRef = useRef(null);
 
   function addImageToPost() {}
+
+  async function sendPost() {
+    if (loading) return;
+    setLoading(true);
+
+    const docRef = await addDoc(collection(db, "posts"), {
+      // id: session.user.uid,
+      // username: session.user.name,
+      // userImg: session.user.image,
+      // tag: session.user.tag,
+      text: input,
+      timestamp: serverTimestamp(),
+    });
+
+    const imageRef = ref(storage, `posts/${docRef.id}/image`);
+
+    if (selectedFile) {
+      await uploadString(imageRef, selectedFile, "data_url").then(async () => {
+        const downloadURL = await getDownloadURL(imageRef);
+        await uploadDoc(doc(db, "posts", docRef.id), {
+          image: downloadURL,
+        });
+      });
+    }
+
+    setLoading(false);
+    setInput("");
+    setSelectedFile(null);
+    setShowEmojis(false);
+  }
+
+  function addEmoji(e) {
+    let sym = e.unified.split("-");
+    let codesArray = [];
+    sym.forEach((el) => codesArray.push("0x" + el));
+    let emoji = String.fromCodePoint(...codesArray);
+    setInput(input + emoji);
+  }
 
   return (
     <div className={`border-b border-gray-700 p-3 flex space-x-3`}>
@@ -26,7 +73,7 @@ export default function Input() {
         className="h-11 w-11 rounded-full cursor-pointer"
       />
       <div className="w-full divide-y divide-gray-700">
-        <div className={``}>
+        <div className={`${selectedFile && "pb-7"} ${input && "space-y-2.5"}`}>
           <textarea
             className="bg-transparent 
             outline-none text-[#d9d9d9]
@@ -82,7 +129,7 @@ export default function Input() {
 
             {showEmojis && (
               <Picker
-                // onSelect={addEmoji}
+                onSelect={addEmoji}
                 style={{
                   position: "absolute",
                   marginTop: "465px",
@@ -94,6 +141,13 @@ export default function Input() {
               />
             )}
           </div>
+          <button
+            className="bg-[#1d9bf0] text-white rounded-full px-4 py-1.5 font-bold shadow-md hover:bg-[#1a8cd8] disabled:hover:bg-[#1d9bf0] disabled:opacity-50 disabled:cursor-default"
+            disabled={!input.trim() && !selectedFile}
+            // onClick={sendPost}
+          >
+            Tweet
+          </button>
         </div>
       </div>
     </div>
