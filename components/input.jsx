@@ -1,10 +1,21 @@
-import { PhotographIcon, XIcon } from "@heroicons/react/outline";
+import {
+  PhotographIcon,
+  XIcon,
+  ChartBarIcon,
+  EmojiHappyIcon,
+  CalendarIcon,
+} from "@heroicons/react/outline";
 import { useState, useRef } from "react";
+import "emoji-mart/css/emoji-mart.css";
+import { Picker } from "emoji-mart";
 
 export default function Input() {
   const [input, setInput] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [showEmojis, setShowEmojis] = useState(false);
+
   const filePickerRef = useRef(null);
+
   function addImageToPost() {}
 
   return (
@@ -57,6 +68,31 @@ export default function Input() {
                 type="file"
               />
             </div>
+            <div className="icon rotate-90">
+              <ChartBarIcon className="text-[#1d9bf0] h-[22px]" />
+            </div>
+
+            <div className="icon" onClick={() => setShowEmojis(!showEmojis)}>
+              <EmojiHappyIcon className="text-[#1d9bf0] h-[22px]" />
+            </div>
+
+            <div className="icon">
+              <CalendarIcon className="text-[#1d9bf0] h-[22px]" />
+            </div>
+
+            {showEmojis && (
+              <Picker
+                // onSelect={addEmoji}
+                style={{
+                  position: "absolute",
+                  marginTop: "465px",
+                  marginLeft: -40,
+                  maxWidth: "320px",
+                  borderRadius: "20px",
+                }}
+                theme="dark"
+              />
+            )}
           </div>
         </div>
       </div>
