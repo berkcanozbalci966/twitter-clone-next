@@ -48,7 +48,7 @@ export default function Input() {
 
         <div className="flex items-center justify-between pt-2 5">
           <div className="flex items-center">
-            <div className="icon">
+            <div className="icon" onClick={() => filePickerRef.current.click()}>
               <PhotographIcon className="h-[22px] text-[#1d9bf0]" />
               <input
                 hidden
