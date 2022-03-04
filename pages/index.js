@@ -21,6 +21,7 @@ export default function Home({ trendingResults, followResults, providers }) {
       <main className="bg-black min-h-screen flex mx-auto">
         <Sidebar />
         <Feed />
+        {session.user.name}
         {/* Widgets */}
         {/* Modal */}
       </main>
