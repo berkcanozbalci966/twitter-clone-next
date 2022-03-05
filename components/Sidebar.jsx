@@ -11,7 +11,7 @@ import {
   DotsHorizontalIcon,
 } from "@heroicons/react/outline";
 import SidebarLink from "./SidebarLink";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 export default function Sidebar() {
   const { data: session } = useSession();
@@ -33,7 +33,12 @@ export default function Sidebar() {
       <button className="hidden xl:inline ml-auto bg-[#1d9bf0] text-white rounded-full w-56 h-[52px] text-lg font-bold shadow-md hover:bg-[#1a8cd8]">
         Tweet
       </button>
-      <div className="text-[#d9d9d9] flex items-center justify-center mt-auto hoverAnimation xl:ml-auto xl:-mr-5 mt-auto">
+      <div
+        className="text-[#d9d9d9] flex items-center 
+      justify-center mt-auto hover-animation
+       xl:ml-auto xl:-mr-5 mt-auto"
+        onClick={signOut}
+      >
         <img
           src={session.user.image}
           alt=""
@@ -42,8 +47,8 @@ export default function Sidebar() {
           height={50}
         />
         <div className="hidden xl:inline leading-5">
-          <h4 className="font-bold">Berkcan</h4>
-          <p className="text-[#6e767d]">@berkcan</p>
+          <h4 className="font-bold"> {session.user.name} </h4>
+          <p className="text-[#6e767d]"> @{session.user.tag} </p>
         </div>
         <DotsHorizontalIcon className="h-5 hidden xl:inline ml-10" />
       </div>

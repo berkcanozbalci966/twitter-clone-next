@@ -17,6 +17,7 @@ import {
   updateDoc,
 } from "@firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "@firebase/storage";
+import { useSession } from "next-auth/react";
 
 export default function Input() {
   const [input, setInput] = useState("");
@@ -24,6 +25,7 @@ export default function Input() {
   const [showEmojis, setShowEmojis] = useState(false);
   const [loading, setLoading] = useState(false);
   const filePickerRef = useRef(null);
+  const { data: session } = useSession();
 
   function addImageToPost(e) {
     const reader = new FileReader();
@@ -41,10 +43,10 @@ export default function Input() {
     setLoading(true);
 
     const docRef = await addDoc(collection(db, "posts"), {
-      // id: session.user.uid,
-      // username: session.user.name,
-      // userImg: session.user.image,
-      // tag: session.user.tag,
+      id: session.user.uid,
+      username: session.user.name,
+      userImg: session.user.image,
+      tag: session.user.tag,
       text: input,
       timestamp: serverTimestamp(),
     });
@@ -81,7 +83,7 @@ export default function Input() {
       } `}
     >
       <img
-        src="https://avatars.githubusercontent.com/u/54132791?s=400&u=279884898037b7ee7c04697e885ba34dd6c0a679&v=4"
+        src={session.user.image}
         alt=""
         className="h-11 w-11 rounded-full cursor-pointer"
       />
