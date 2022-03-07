@@ -40,6 +40,14 @@ export default function Post({ id, post, postPage }) {
 
   useEffect(
     () =>
+      onSnapshot(collection(db, "posts", id, "likes"), (snapshot) =>
+        setLikes(snapshot.docs)
+      ),
+    [db, id]
+  );
+
+  useEffect(
+    () =>
       setLiked(
         likes.findIndex((like) => like.id === session?.user?.uid) !== -1
       ),
@@ -94,7 +102,7 @@ export default function Post({ id, post, postPage }) {
             </div>
             ·{" "}
             <span className="hover:underline text-sm sm:text-[15px]">
-              {/* <Moment fromNow>{post?.timestamp?.toDate()}</Moment> */}
+              <Moment fromNow>{post?.timestamp?.toDate()}</Moment>
             </span>
             {!postPage && (
               <p className="text-[#d9d9d9] text-[15px] sm:text-base mt-0.5">
@@ -166,13 +174,13 @@ export default function Post({ id, post, postPage }) {
             }}
           >
             <div className="icon group-hover:bg-pink-600/10">
-              {/* {liked ? (
+              {liked ? (
                 <HeartIconFilled className="h-5 text-pink-600" />
               ) : (
                 <HeartIcon className="h-5 group-hover:text-pink-600" />
-              )} */}
+              )}
             </div>
-            {/* {likes.length > 0 && (
+            {likes.length > 0 && (
               <span
                 className={`group-hover:text-pink-600 text-sm ${
                   liked && "text-pink-600"
@@ -180,7 +188,7 @@ export default function Post({ id, post, postPage }) {
               >
                 {likes.length}
               </span>
-            )} */}
+            )}
           </div>
 
           <div className="icon group">
