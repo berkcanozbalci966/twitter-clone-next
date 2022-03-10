@@ -54,6 +54,18 @@ export default function Post({ id, post, postPage }) {
     [likes]
   );
 
+  useEffect(
+    () =>
+      onSnapshot(
+        query(
+          collection(db, "posts", id, "comments"),
+          orderBy("timestamp", "desc")
+        ),
+        (snapshot) => setComments(snapshot.docs)
+      ),
+    [db, id]
+  );
+
   const likePost = async () => {
     if (liked) {
       await deleteDoc(doc(db, "posts", id, "likes", session.user.uid));
@@ -127,7 +139,7 @@ export default function Post({ id, post, postPage }) {
             postPage && "mx-auto"
           }`}
         >
-          {/* <div
+          <div
             className="flex items-center space-x-1 group"
             onClick={(e) => {
               e.stopPropagation();
@@ -143,7 +155,7 @@ export default function Post({ id, post, postPage }) {
                 {comments.length}
               </span>
             )}
-          </div> */}
+          </div>
 
           {session.user.uid === post?.id ? (
             <div

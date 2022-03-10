@@ -4,6 +4,7 @@ import Feed from "../components/Feed";
 import Sidebar from "../components/Sidebar";
 import styles from "../styles/Home.module.css";
 import Login from "../components/Login";
+import Modal from "../components/Modal";
 
 export default function Home({ trendingResults, followResults, providers }) {
   const { data: session } = useSession();
@@ -23,7 +24,7 @@ export default function Home({ trendingResults, followResults, providers }) {
         <Feed />
         {session.user.name}
         {/* Widgets */}
-        {/* Modal */}
+        <Modal />
       </main>
     </div>
   );
